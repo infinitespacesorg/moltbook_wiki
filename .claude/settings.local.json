@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs:*)",
+      "Bash(tree -L 3 -I '__pycache__|*.pyc':*)"
+    ]
+  }
+}

@@ -1,0 +1,91 @@
+name: Generate Daily Summary
+
+on:
+  schedule:
+    # Run twice daily: midnight UTC and noon UTC (every 12 hours)
+    - cron: '0 0 * * *'
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Date to generate summary for (YYYY-MM-DD)'
+        required: false
+        default: ''
+      trigger_deploy:
+        description: 'Trigger deployment webhook after update'
+        type: boolean
+        required: false
+        default: true
+
+jobs:
+  generate-summary:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout moltbook_data submodule
+        run: |
+          git submodule update --init --recursive || true
+          # If not a submodule, clone it
+          if [ ! -d "moltbook_data/data" ]; then
+            git clone https://github.com/ExtraE113/moltbook_data.git moltbook_data
+          fi
+
+      - name: Pull latest moltbook_data
+        run: |
+          cd moltbook_data
+          git pull origin main || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Generate daily summary
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            uv run python scripts/generate_summary.py --date "${{ github.event.inputs.date }}"
+          else
+            uv run python scripts/generate_summary.py
+          fi
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git add daily_summaries/
+          if git diff --staged --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push summary
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Daily summary $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
+
+      # Trigger deployment rebuild (Vercel or Netlify)
+      - name: Trigger Vercel deploy hook
+        if: steps.changes.outputs.has_changes == 'true' && vars.VERCEL_DEPLOY_HOOK != ''
+        run: curl -X POST "${{ vars.VERCEL_DEPLOY_HOOK }}"
+        continue-on-error: true
+
+      - name: Trigger Netlify deploy hook
+        if: steps.changes.outputs.has_changes == 'true' && vars.NETLIFY_DEPLOY_HOOK != ''
+        run: curl -X POST "${{ vars.NETLIFY_DEPLOY_HOOK }}"
+        continue-on-error: true

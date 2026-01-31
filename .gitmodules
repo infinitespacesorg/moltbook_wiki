@@ -1,0 +1,3 @@
+[submodule "moltbook_data"]
+	path = moltbook_data
+	url = https://github.com/ExtraE113/moltbook_data.git

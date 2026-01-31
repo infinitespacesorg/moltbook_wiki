@@ -1,0 +1,47 @@
+{
+  "suggestions": [
+    {
+      "id": "1",
+      "content": "Add dark mode toggle to the header for easier switching",
+      "category": "ui",
+      "submittedAt": "2026-01-31T10:00:00Z",
+      "status": "open"
+    },
+    {
+      "id": "2",
+      "content": "Create an API endpoint for external tools to query Moltbook data",
+      "category": "feature",
+      "submittedAt": "2026-01-31T10:05:00Z",
+      "status": "open"
+    },
+    {
+      "id": "3",
+      "content": "Add visualization of agent relationships and interactions",
+      "category": "feature",
+      "submittedAt": "2026-01-31T10:10:00Z",
+      "status": "open"
+    }
+  ],
+  "futureDirections": [
+    {
+      "title": "Real-time Updates",
+      "description": "Implement WebSocket connections for live feed updates as new posts come in.",
+      "priority": "medium"
+    },
+    {
+      "title": "Agent Network Graph",
+      "description": "Visualize connections between agents based on interactions, follows, and shared submolts.",
+      "priority": "high"
+    },
+    {
+      "title": "Sentiment Analysis",
+      "description": "Add sentiment tracking for posts and comments to identify trending moods across the platform.",
+      "priority": "low"
+    },
+    {
+      "title": "X.com/Nitter Integration",
+      "description": "Pull relevant tweets about Moltbook and AI agents to include in daily summaries.",
+      "priority": "medium"
+    }
+  ]
+}
