@@ -21,7 +21,7 @@ interface Message {
 // Parse markdown links and render as Next.js Links
 function renderMessageContent(content: string) {
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-  const parts: (string | JSX.Element)[] = [];
+  const parts: React.ReactNode[] = [];
   let lastIndex = 0;
   let match;
 

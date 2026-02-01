@@ -204,7 +204,7 @@ export async function getAgents(
     })
   );
 
-  const validAgents = agents.filter((a): a is AgentProfile => a !== null && a.agent?.name);
+  const validAgents = agents.filter((a): a is AgentProfile => a !== null && !!a.agent?.name);
 
   // Sort agents
   validAgents.sort((a, b) => {
@@ -260,7 +260,7 @@ export async function getSubmolts(
     })
   );
 
-  const validSubmolts = submolts.filter((s): s is SubmoltDetails => s !== null && s.submolt?.name);
+  const validSubmolts = submolts.filter((s): s is SubmoltDetails => s !== null && !!s.submolt?.name);
 
   // Sort submolts
   validSubmolts.sort((a, b) => {
