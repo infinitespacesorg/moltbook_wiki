@@ -1,11 +1,7 @@
 [build]
-  base = "web"
-  command = "cd .. && rm -rf moltbook_data && git clone --depth 1 https://github.com/ExtraE113/moltbook_data.git moltbook_data && cp -r moltbook_data/data ./web/moltbook_data && cp -r daily_summaries ./web/daily_summaries_data && cd web && npm run build"
-  publish = ".next"
+  base = "astro"
+  command = "cd .. && rm -rf moltbook_data && git clone --depth 1 https://github.com/ExtraE113/moltbook_data.git moltbook_data && cd astro && npm install && npm run build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
-  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
