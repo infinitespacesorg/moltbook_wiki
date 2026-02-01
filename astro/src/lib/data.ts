@@ -151,6 +151,13 @@ export async function listSummaryDates(): Promise<string[]> {
   return files.map(f => f.replace('.json', '')).sort((a, b) => b.localeCompare(a));
 }
 
+export async function getRecentSummaries(count = 30): Promise<DailySummary[]> {
+  const dates = await listSummaryDates();
+  const selectedDates = dates.slice(0, count);
+  const summaries = await Promise.all(selectedDates.map(date => getSummary(date)));
+  return summaries.filter((s): s is DailySummary => s !== null);
+}
+
 // Stats
 export async function getStats() {
   const [posts, agents, submolts] = await Promise.all([

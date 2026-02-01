@@ -1,0 +1,296 @@
+---
+import Base from '../layouts/Base.astro';
+import { getRecentSummaries } from '../lib/data';
+import { calculateGrowthMetrics, calculateDailyActivity } from '../lib/analytics';
+
+const summaries = await getRecentSummaries(30);
+const metrics = calculateGrowthMetrics(summaries);
+const activity = calculateDailyActivity(summaries);
+
+function formatGrowth(value: number): string {
+  if (value > 0) return `+${value.toFixed(1)}%`;
+  if (value < 0) return `${value.toFixed(1)}%`;
+  return '0%';
+}
+
+function growthClass(value: number): string {
+  if (value > 0) return 'text-green-600 dark:text-green-400';
+  if (value < 0) return 'text-red-600 dark:text-red-400';
+  return 'text-gray-500 dark:text-gray-400';
+}
+---
+
+<Base title="Dashboard">
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold">Analytics Dashboard</h1>
+      <p class="mt-1 text-gray-600 dark:text-gray-400">
+        Track Moltbook growth and activity metrics
+      </p>
+    </div>
+
+    {metrics.totalPosts > 0 ? (
+      <>
+        <!-- Key Metrics -->
+        <div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <!-- Total Posts -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Posts</p>
+                <p class="mt-2 text-3xl font-bold">{metrics.totalPosts.toLocaleString()}</p>
+              </div>
+              <div class="rounded-lg bg-orange-100 p-3 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center gap-1">
+              <span class={`text-sm font-medium ${growthClass(metrics.postGrowthRate)}`}>
+                {formatGrowth(metrics.postGrowthRate)}
+              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">vs yesterday</span>
+            </div>
+          </div>
+
+          <!-- Total Comments -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Comments</p>
+                <p class="mt-2 text-3xl font-bold">{metrics.totalComments.toLocaleString()}</p>
+              </div>
+              <div class="rounded-lg bg-blue-100 p-3 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center gap-1">
+              <span class={`text-sm font-medium ${growthClass(metrics.commentGrowthRate)}`}>
+                {formatGrowth(metrics.commentGrowthRate)}
+              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">vs yesterday</span>
+            </div>
+          </div>
+
+          <!-- Active Agents -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Agents</p>
+                <p class="mt-2 text-3xl font-bold">{metrics.activeAgents.toLocaleString()}</p>
+              </div>
+              <div class="rounded-lg bg-green-100 p-3 text-green-600 dark:bg-green-900/30 dark:text-green-400">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center gap-1">
+              <span class={`text-sm font-medium ${growthClass(metrics.agentGrowthRate)}`}>
+                {formatGrowth(metrics.agentGrowthRate)}
+              </span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">vs yesterday</span>
+            </div>
+          </div>
+
+          <!-- Active Submolts -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Submolts</p>
+                <p class="mt-2 text-3xl font-bold">{metrics.activeSubmolts.toLocaleString()}</p>
+              </div>
+              <div class="rounded-lg bg-purple-100 p-3 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Stats -->
+        <div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-center gap-3">
+              <span class="text-orange-500">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </span>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Avg Daily Posts</p>
+                <p class="text-xl font-bold">{activity.avgNewPosts.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+          <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-center gap-3">
+              <span class="text-blue-500">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </span>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Avg Daily Comments</p>
+                <p class="text-xl font-bold">{activity.avgNewComments.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+          <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-center gap-3">
+              <span class="text-green-500">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </span>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Peak Posts Day</p>
+                <p class="text-xl font-bold">{activity.peakPostsDay || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+          <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+            <div class="flex items-center gap-3">
+              <span class="text-purple-500">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </span>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Peak Comments Day</p>
+                <p class="text-xl font-bold">{activity.peakCommentsDay || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid gap-6 lg:grid-cols-2">
+          <!-- Posts Chart -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <h3 class="mb-4 font-semibold">Total Posts Over Time</h3>
+            {metrics.postTimeSeries.length > 0 ? (
+              <div class="relative h-[200px]">
+                <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-xs text-gray-400">
+                  <span>{Math.max(...metrics.postTimeSeries.map(d => d.value)).toLocaleString()}</span>
+                  <span>{Math.round(Math.max(...metrics.postTimeSeries.map(d => d.value)) / 2).toLocaleString()}</span>
+                  <span>0</span>
+                </div>
+                <div class="ml-12 flex h-full items-end gap-1 pb-6">
+                  {metrics.postTimeSeries.map((bar) => {
+                    const maxVal = Math.max(...metrics.postTimeSeries.map(d => d.value));
+                    const height = maxVal > 0 ? (bar.value / maxVal) * 100 : 0;
+                    return (
+                      <div class="group relative flex-1 flex flex-col items-center" title={`${bar.label}: ${bar.value.toLocaleString()}`}>
+                        <div
+                          class="w-full rounded-t bg-orange-500 transition-all hover:opacity-80"
+                          style={`height: ${height}%; min-height: ${height > 0 ? '4px' : '0'};`}
+                        />
+                        <span class="absolute -bottom-5 text-[10px] text-gray-400 whitespace-nowrap hidden lg:inline">
+                          {bar.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div class="flex h-[200px] items-center justify-center text-gray-500">No data</div>
+            )}
+          </div>
+
+          <!-- Comments Chart -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <h3 class="mb-4 font-semibold">Total Comments Over Time</h3>
+            {metrics.commentTimeSeries.length > 0 ? (
+              <div class="relative h-[200px]">
+                <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-xs text-gray-400">
+                  <span>{Math.max(...metrics.commentTimeSeries.map(d => d.value)).toLocaleString()}</span>
+                  <span>{Math.round(Math.max(...metrics.commentTimeSeries.map(d => d.value)) / 2).toLocaleString()}</span>
+                  <span>0</span>
+                </div>
+                <div class="ml-12 flex h-full items-end gap-1 pb-6">
+                  {metrics.commentTimeSeries.map((bar) => {
+                    const maxVal = Math.max(...metrics.commentTimeSeries.map(d => d.value));
+                    const height = maxVal > 0 ? (bar.value / maxVal) * 100 : 0;
+                    return (
+                      <div class="group relative flex-1 flex flex-col items-center" title={`${bar.label}: ${bar.value.toLocaleString()}`}>
+                        <div
+                          class="w-full rounded-t bg-blue-500 transition-all hover:opacity-80"
+                          style={`height: ${height}%; min-height: ${height > 0 ? '4px' : '0'};`}
+                        />
+                        <span class="absolute -bottom-5 text-[10px] text-gray-400 whitespace-nowrap hidden lg:inline">
+                          {bar.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div class="flex h-[200px] items-center justify-center text-gray-500">No data</div>
+            )}
+          </div>
+
+          <!-- Agents Chart -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <h3 class="mb-4 font-semibold">Active Agents Over Time</h3>
+            {metrics.agentTimeSeries.length > 0 ? (
+              <div class="relative h-[200px]">
+                <div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-xs text-gray-400">
+                  <span>{Math.max(...metrics.agentTimeSeries.map(d => d.value)).toLocaleString()}</span>
+                  <span>{Math.round(Math.max(...metrics.agentTimeSeries.map(d => d.value)) / 2).toLocaleString()}</span>
+                  <span>0</span>
+                </div>
+                <div class="ml-12 flex h-full items-end gap-1 pb-6">
+                  {metrics.agentTimeSeries.map((bar) => {
+                    const maxVal = Math.max(...metrics.agentTimeSeries.map(d => d.value));
+                    const height = maxVal > 0 ? (bar.value / maxVal) * 100 : 0;
+                    return (
+                      <div class="group relative flex-1 flex flex-col items-center" title={`${bar.label}: ${bar.value.toLocaleString()}`}>
+                        <div
+                          class="w-full rounded-t bg-green-500 transition-all hover:opacity-80"
+                          style={`height: ${height}%; min-height: ${height > 0 ? '4px' : '0'};`}
+                        />
+                        <span class="absolute -bottom-5 text-[10px] text-gray-400 whitespace-nowrap hidden lg:inline">
+                          {bar.label}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div class="flex h-[200px] items-center justify-center text-gray-500">No data</div>
+            )}
+          </div>
+
+          <!-- About -->
+          <div class="rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+            <h3 class="mb-4 font-semibold">About These Metrics</h3>
+            <div class="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+              <p><strong>Total Posts:</strong> Cumulative number of posts created on Moltbook.</p>
+              <p><strong>Total Comments:</strong> Cumulative number of comments across all posts.</p>
+              <p><strong>Active Agents:</strong> AI agents that have posted or commented in the tracked period.</p>
+              <p><strong>Active Submolts:</strong> Communities with activity in the tracked period.</p>
+              <p class="mt-4 text-xs text-gray-500">
+                Data is based on daily summaries from the moltbook_data repository.
+                Growth rates compare to the previous day.
+              </p>
+            </div>
+          </div>
+        </div>
+      </>
+    ) : (
+      <div class="rounded-lg border border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-gray-900">
+        <p class="text-gray-500 dark:text-gray-400">
+          No analytics data available. Make sure daily summaries are generated.
+        </p>
+      </div>
+    )}
+  </div>
+</Base>
