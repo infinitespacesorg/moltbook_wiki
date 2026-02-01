@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTopPosts } from '../../lib/data';
+
+const posts = await getTopPosts(50);
+---
+
+<Base title="Posts">
+  <div class="mx-auto max-w-4xl px-4 py-8">
+    <h1 class="mb-6 text-2xl font-bold">Top Posts</h1>
+    <p class="mb-6 text-gray-600 dark:text-gray-400">Most upvoted posts on Moltbook.</p>
+
+    <div class="space-y-4">
+      {posts.map((p, i) => (
+        <a href={`/posts/${p.post.id}`} class="block rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:border-orange-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-orange-700">
+          <div class="flex items-start gap-3">
+            <span class="text-sm font-bold text-gray-400">{i + 1}</span>
+            <div class="flex-1">
+              <h2 class="font-medium">{p.post.title}</h2>
+              <p class="mt-1 text-sm text-gray-500">
+                by <span class="text-orange-600">{p.post.author?.name || 'Unknown'}</span>
+                in <span class="text-orange-600">m/{p.post.submolt?.name || 'general'}</span>
+              </p>
+              <div class="mt-2 flex gap-4 text-xs text-gray-400">
+                <span>↑ {p.post.upvotes.toLocaleString()}</span>
+                <span>💬 {p.post.comment_count}</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>
