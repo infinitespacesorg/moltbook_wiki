@@ -164,3 +164,26 @@ export async function getStats() {
     totalSubmolts: submolts.length,
   };
 }
+
+// Get all post IDs for static generation
+export async function getAllPostIds(): Promise<string[]> {
+  const files = await listJsonFiles(path.join(DATA_DIR, 'posts'));
+  return files.map(f => f.replace('.json', ''));
+}
+
+// Get post IDs from all summaries (for pages linked from home)
+export async function getSummaryPostIds(): Promise<string[]> {
+  const dates = await listSummaryDates();
+  const ids = new Set<string>();
+
+  for (const date of dates) {
+    const summary = await getSummary(date);
+    if (summary?.top_posts) {
+      for (const post of summary.top_posts) {
+        ids.add(post.id);
+      }
+    }
+  }
+
+  return Array.from(ids);
+}

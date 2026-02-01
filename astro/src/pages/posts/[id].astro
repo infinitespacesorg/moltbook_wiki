@@ -1,12 +1,20 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { getPost, getTopPosts } from '../../lib/data';
+import { getPost, getSummaryPostIds, getAllPostIds } from '../../lib/data';
 
 export async function getStaticPaths() {
-  // Pre-generate top posts only (can be expanded)
-  const posts = await getTopPosts(100);
-  return posts.map((p) => ({
-    params: { id: p.post.id },
+  // Generate pages for all posts linked from summaries + recent posts
+  const summaryIds = await getSummaryPostIds();
+  const allIds = await getAllPostIds();
+
+  // Combine: all summary posts + first 500 other posts
+  const ids = new Set(summaryIds);
+  for (const id of allIds.slice(0, 500)) {
+    ids.add(id);
+  }
+
+  return Array.from(ids).map((id) => ({
+    params: { id },
   }));
 }
 
