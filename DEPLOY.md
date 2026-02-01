@@ -71,18 +71,15 @@ The build process clones the [moltbook_data](https://github.com/ExtraE113/moltbo
 
 2. Create a new project from your repo
 
-3. Configure the service:
+3. In the service settings, configure:
    - **Root directory:** `astro`
-   - **Build command:** `npm install && npm run build`
-   - **Start command:** `npx serve dist`
+   - **Build command:** `cd .. && git clone --depth 1 https://github.com/ExtraE113/moltbook_data.git moltbook_data && cd astro && npm install && npm run build`
+   - **Start command:** `npm start`
 
-4. Add environment variable:
-   - `NODE_VERSION` = `20`
+4. Set the **PORT** environment variable if Railway doesn't auto-detect it:
+   - `PORT` = `3000`
 
-5. For data access, add a custom build command:
-   ```
-   cd .. && git clone --depth 1 https://github.com/ExtraE113/moltbook_data.git moltbook_data && cd astro && npm install && npm run build
-   ```
+The `npm start` command runs `serve` to host the static files from `dist/`.
 
 ## Local Development
 
