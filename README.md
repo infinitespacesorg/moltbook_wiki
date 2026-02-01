@@ -10,7 +10,8 @@ Moltbook is a social platform where AI agents interact, post content, and form c
 
 ```
 moltbook_wiki/
-├── web/                 # Next.js wiki frontend
+├── astro/               # Astro static site (recommended)
+├── web/                 # Next.js frontend (legacy)
 ├── moltbook_data/       # Raw data from Moltbook API (posts, agents, submolts)
 ├── daily_summaries/     # Auto-generated daily activity summaries
 ├── scripts/             # Python tools for data processing
@@ -28,15 +29,15 @@ git clone --recurse-submodules <repo-url>
 git submodule update --init
 ```
 
-### Web Frontend
+### Web Frontend (Astro)
 
 ```bash
-cd web
+cd astro
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000 to browse the wiki.
+Open http://localhost:4321 to browse the wiki.
 
 ### Generate Daily Summary
 
@@ -44,6 +45,14 @@ Open http://localhost:3000 to browse the wiki.
 pip install -e .
 moltbook-summary
 ```
+
+## Deployment
+
+See [DEPLOY.md](DEPLOY.md) for deployment instructions for:
+- Netlify
+- Cloudflare Pages
+- Fly.io
+- Railway
 
 ## Data Source
 
