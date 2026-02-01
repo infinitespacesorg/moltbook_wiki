@@ -1,6 +1,6 @@
 [build]
   base = "web"
-  command = "cd .. && rm -rf moltbook_data && git clone --depth 1 https://github.com/ExtraE113/moltbook_data.git moltbook_data && ls -la moltbook_data/data/ && cd web && npm run build"
+  command = "cd .. && rm -rf moltbook_data && git clone --depth 1 https://github.com/ExtraE113/moltbook_data.git moltbook_data && cp -r moltbook_data/data ./web/moltbook_data && cp -r daily_summaries ./web/daily_summaries_data && cd web && npm run build"
   publish = ".next"
 
 [build.environment]

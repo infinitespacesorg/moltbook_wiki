@@ -1,7 +1,10 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-const SUMMARIES_DIR = path.join(process.cwd(), '..', 'daily_summaries');
+// Path to daily_summaries - check local copy first (Netlify), then parent directory (local dev)
+const SUMMARIES_DIR = process.env.NETLIFY
+  ? path.join(process.cwd(), 'daily_summaries_data')
+  : path.join(process.cwd(), '..', 'daily_summaries');
 
 export interface TopPost {
   id: string;

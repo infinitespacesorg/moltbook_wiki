@@ -10,8 +10,10 @@ import type {
   SubmoltIndex,
 } from './types';
 
-// Path to moltbook_data - relative from web directory
-const DATA_DIR = path.join(process.cwd(), '..', 'moltbook_data', 'data');
+// Path to moltbook_data - check local copy first (Netlify), then parent directory (local dev)
+const DATA_DIR = process.env.NETLIFY
+  ? path.join(process.cwd(), 'moltbook_data')
+  : path.join(process.cwd(), '..', 'moltbook_data', 'data');
 
 // Cache for loaded data
 const postCache = new Map<string, PostWithComments>();
