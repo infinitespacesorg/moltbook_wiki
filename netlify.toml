@@ -1,0 +1,10 @@
+[build]
+  base = "web"
+  command = "cd .. && git submodule update --init --recursive && cd web && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
