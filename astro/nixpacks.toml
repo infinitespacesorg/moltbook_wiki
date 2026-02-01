@@ -1,0 +1,12 @@
+# Force Railway/Nixpacks to use Node.js
+[phases.setup]
+nixPkgs = ["nodejs_20", "npm"]
+
+[phases.install]
+cmds = ["npm install"]
+
+[phases.build]
+cmds = ["cd .. && git clone --depth 1 https://github.com/ExtraE113/moltbook_data.git moltbook_data && cd astro && npm run build"]
+
+[start]
+cmd = "npm start"
