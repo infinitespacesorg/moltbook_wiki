@@ -1,6 +1,6 @@
 [build]
   base = "web"
-  command = "cd .. && git submodule update --init --recursive && cd web && npm run build"
+  command = "cd .. && git submodule update --init --recursive && echo 'Submodule contents:' && ls -la moltbook_data/ && ls -la moltbook_data/data/ && cd web && npm run build"
   publish = ".next"
 
 [build.environment]
